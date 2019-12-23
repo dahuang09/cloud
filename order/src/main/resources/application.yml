@@ -13,3 +13,52 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+
+# 重试
+resilience4j:
+  retry:
+    #Retry 的优先级高于 bulkhead 、 Circuit breaker 以及 rateLimiter ，即 Retry 会先于另外三个执行。 Retry、 bulkhead 、 Circuit breaker 以及 rateLimiter
+    #的优先级数值默认分别是 Integer.MAX_VALUE-3、Integer.MAX_VALUE-2、Integer.MAX_VALUE-1 以及 Integer.MAX_VALUE ，即数值越小，优先级越高；
+#    retryAspectOrder: 399
+    backends:
+      #backends 属性中我们可以配置不同的 Retry 策略，给不同的策略分别取一个名字， retryBackendA 就是一个 Retry 策略的名字。在 Java 代码中，我们将直接通过指定 Retry 策略的名字来使用某一种 Retry 方案
+      retryBackendA:
+        maxRetryAttempts: 3 #表示最大重试次数
+        waitDuration: 1000 #表示下一次重试等待时间，最小为100 ms
+        eventConsumerBufferSize: 1 #表示重试事件缓冲区大小
+        enableExponentialBackoff: true #表示是否开启指数退避抖动算法，当一次调用失败后，如果在相同的时间间隔内发起重试，有可能发生连续的调用失败，因此可以开启指数退避抖动算法；
+        exponentialBackoffMultiplier: 2 #表示时间间隔乘数
+        enableRandomizedWait: false #表示下次重试的时间间隔是否随机， enableRandomizedWait 和 enableExponentialBackoff 默认为 false ，并且这两个不可以同时开启
+        randomizedWaitFactor: 2
+        retryExceptionPredicate:
+          - com.jacob.cloud.order.failure.FailurePredicate #什么样的异常会被认定为请求失败，这里的RecordFailurePredicate是一个自定义的类
+          - com.netflix.client.ClientException
+#        retryExceptions: #表示需要重试的异常
+#        - com.netflix.client.ClientException
+#      ignoreExceptions: #表示忽略的异常
+#        - cn.com.scitc.exception.IgnoredException
+# 熔断
+#  circuitbreaker:
+#    backends:
+#      backendA: #断路器策略的命名，和 Retry 类似
+#        ringBufferSizeInClosedState: 5 #表示断路器关闭状态下，环形缓冲区的大小
+#        ringBufferSizeInHalfOpenState: 3 #表示断路器处于 HalfOpen 状态下，环形缓冲区的大小
+#        waitInterval: 5000  #表示断路器从 open 切换到 half closed 状态时，需要保持的时间
+#        failureRateThreshold: 50  #表示故障率阈值百分比，超过这个阈值，断路器就会打开
+#        eventConsumerBufferSize: 10 #表示事件缓冲区大小
+#        registerHealthIndicator: true #表示开启健康检测
+#        recordFailurePredicate: com.jacob.cloud.order.failure.FailurePredicate
+#        recordExceptions:
+#          - org.springframework.web.client.HttpServerErrorException
+#        ignoreExceptions:
+#          - org.springframework.web.client.HttpClientErrorException
+# 限流
+#  ratelimiter:
+#    limiters:
+#      backendRateLimiter: #表示配置的名称
+#        limitForPeriod: 1 #表示请求频次的阈值
+#        limitRefreshPeriodInMillis: 5000 #表示频次刷新的周期
+#        timeoutInMillis: 5000 #许可期限的等待时间，默认为5秒
+#        subscribeForEvents: true  #表示开启事件订阅
+#        registerHealthIndicator: true #表示开启健康监控
+#        eventConsumerBufferSize: 100  #表示事件缓冲区大小

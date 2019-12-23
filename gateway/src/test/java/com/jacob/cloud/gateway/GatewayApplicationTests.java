@@ -1,10 +1,10 @@
-package com.jacob.cloud.circuitbreaker;
+package com.jacob.cloud.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CircuitBreakerApplicationTests {
+class GatewayApplicationTests {
 
     @Test
     void contextLoads() {
