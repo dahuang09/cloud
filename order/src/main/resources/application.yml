@@ -62,3 +62,5 @@ resilience4j:
 #        subscribeForEvents: true  #表示开启事件订阅
 #        registerHealthIndicator: true #表示开启健康监控
 #        eventConsumerBufferSize: 100  #表示事件缓冲区大小
+  zipkin:
+    base-url: http://localhost:9411
