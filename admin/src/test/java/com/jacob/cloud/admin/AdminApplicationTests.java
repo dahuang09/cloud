@@ -1,10 +1,10 @@
-package com.jacob.cloud.zipkin;
+package com.jacob.cloud.admin;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ZipkinApplicationTests {
+class AdminApplicationTests {
 
     @Test
     void contextLoads() {

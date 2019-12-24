@@ -3,6 +3,17 @@ spring:
     allow-bean-definition-overriding: true
   application:
     name: order-service
+#  zipkin:
+#    base-url: http://localhost:9411
+#  sleuth:
+#    sampler:
+#      percentage: 1.0
+  boot:
+    admin:
+      client:
+        url:  http://localhost:10000 #指定SpringBootAdmin服务端地址
+      instance:
+        name: order-service
 
 server:
   port: 11000
@@ -10,9 +21,19 @@ server:
 eureka:
   instance:
     hostname: localhost
+    health-check-url-path: /actuator/health
   client:
     serviceUrl:
       defaultZone: http://${eureka.instance.hostname}:8761/eureka/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"   #暴露所有的端点我们可以看到更多的服务实例相关信息，
+  endpoint:
+    health:
+      show-details: ALWAYS   #health endpoint是否必须显示全部细节
 
 # 重试
 resilience4j:
@@ -62,5 +83,3 @@ resilience4j:
 #        subscribeForEvents: true  #表示开启事件订阅
 #        registerHealthIndicator: true #表示开启健康监控
 #        eventConsumerBufferSize: 100  #表示事件缓冲区大小
-  zipkin:
-    base-url: http://localhost:9411

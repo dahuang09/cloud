@@ -1,0 +1,26 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: admin-service
+
+server:
+  port: 10000
+
+eureka:   #<1>
+  instance:
+    hostname: localhost
+    health-check-url-path: /actuator/health   #应用实例的相对运行状况检查URL路径默认为 /info/health ，2.0后actuator的地址发生了变化
+  client:
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka/  #注册到 EurekaServer
+
+# 2.0开始，actuator默认不开放，所以要设置为开放
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"  #暴露所有的端点我们可以看到更多应用相关信息
+  endpoint:
+    health:
+      show-details: ALWAYS  #health endpoint是否必须显示全部细节

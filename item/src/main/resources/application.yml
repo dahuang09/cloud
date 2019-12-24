@@ -3,6 +3,12 @@ spring:
     allow-bean-definition-overriding: true
   application:
     name: item-service
+  boot:
+    admin:
+      client:
+        url:  http://localhost:10000 #指定SpringBootAdmin服务端地址
+      instance:
+        name: item-service
 
 server:
   port: 12000
